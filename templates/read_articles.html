@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>王小波资料检索系统</title>
+    <link href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/minty.css') }}" rel="stylesheet">
+</head>
+<body style="background-color: #a7e4cc;">
+    <div class="container">
+        <h3 class="text-center" style="height: 38px;margin-top: 12px;" >王小波资料检索系统</h3>
+        <div class="row">
+            <!--左边栏-->
+            <div class="col-md-3" style="border-radius: 10px;height: 500px; background-color: #f8f8f8;border:2px solid #a7e4cc;">
+                <!--小导航-->
+                <br>
+                <ul class="nav nav-pills">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/">全文检索</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">文章浏览</a>
+                  </li>
+                </ul>
+                <!--小导航-->
+
+                <!--检索-->
+                <br>
+                <div class="form-group"  style="overflow-y:auto; overflow-x:auto;width:250px; height:400px;">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th width="60px" scope="col" class="table-light">序号</th>
+                          <th scope="col" class="table-light">题目</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {% for book in books %}
+                            <tr style="background-color: #ffffff">
+                                <td>{{ book.id }}</td>
+                                <td class="test" style="cursor: pointer;" title={{ introduction }}>{{ book.title }}</td>
+                            </tr>
+                          {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+                <!--检索-->
+            </div>
+            <!--左边栏-->
+
+            <!--右边栏-->
+            <div class="col-md-9" style="border:2px solid #a7e4cc; border-radius: 10px; background-color: #f8f8f8; overflow-y:auto; overflow-x:auto;width:400px; height:500px;">
+
+                <div class="tips">
+                    <br>
+                    <h4 id="p_title">{% autoescape false %}{{ title }}{% endautoescape %}</h4>
+                    <br>
+                    <br>
+                    <p>{% autoescape false %}{{ introduction }}{% endautoescape %}</p>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <p style="text-align:right"><u id="read" style="cursor: pointer; color: #7dd8b4;">{% autoescape false %}{{ to_article }}{% endautoescape %}</u></p>
+                </div>
+                {# 隐藏按钮#}
+                <form action ='/read' method='post' class="form-group d-none">
+                    <input type="text" class="form-control" placeholder="Default input" id="title" name='title'>
+                    <br>
+                    <div class="text-center">
+                        <button type="submit" class="search-submit btn btn-success disabled" id="introduce">简介</button>
+                    </div>
+                </form>
+                {# 隐藏按钮#}
+            </div>
+            <!--右边栏-->
+
+        </div>
+    </div>
+
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js" charset="gb2312"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script>
+    $(document).ready(function($) {
+        $(".test").click(function(){
+            $("#title").val($(this).text());
+            $('#introduce').click();
+        });
+        $("#read").click(function(){
+            {#$("#read").addClass("d-none");#}
+            let title = $("#p_title").text();
+            url = "article/"+ title;
+            window.document.location = url;
+        });
+    });
+</script>
+</body>
+</html>

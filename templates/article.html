@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>王小波资料检索系统</title>
+    <link href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/minty.css') }}" rel="stylesheet">
+</head>
+<body style="background-color: #e4f3ef;">
+<div class="container">
+        <button id="back" type="button" class="btn btn-primary disabled" style="margin-top:10px;">返回</button>
+        <h3 class="text-center" >{{ im_title }}</h3>
+    <div><pre style="white-space: pre-wrap;  ">{% autoescape false %}{{ im_content }}{% endautoescape %}</pre></div>
+</div>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script>
+    $(document).ready(function($) {
+        $("#back").click(function(){
+            url = "/read"
+            window.document.location = url;
+        });
+    });
+</script>
+</body>
+</html>

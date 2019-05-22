@@ -1,0 +1,3 @@
+SECRET_KEY = 'hard to guess string'
+DEBUG = True
+JSON_AS_ASCII = False

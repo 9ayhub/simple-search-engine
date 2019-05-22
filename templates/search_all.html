@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>王小波资料检索系统</title>
+    <link href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/minty.css') }}" rel="stylesheet">
+</head>
+<body style="background-color: #a7e4cc;">
+    <div class="container">
+        <div>
+        <h3 class="text-center" style="height: 38px;margin-top: 12px;" >王小波资料检索系统</h3>
+        </div>
+        <div class="row">
+            <!--左边栏-->
+            <div class="col-md-3" style="border-radius: 10px;height: 500px; background-color: #f8f8f8;border:2px solid #a7e4cc;">
+                <!--小导航-->
+                <br>
+                <ul class="nav nav-pills">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">全文检索</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/read">文章浏览</a>
+                  </li>
+                </ul>
+                <!--小导航-->
+
+                <!--检索-->
+                <br>
+                <form action ='/' method='post' class="form-group">
+                    <input type="text" class="form-control" placeholder="Default input" id="inputDefault" name='query'>
+                    <br>
+                    <div class="text-center">
+                        <button type="submit" class="search-submit btn btn-success disabled">检索</button>
+                    </div>
+                </form>
+                <!--检索-->
+            </div>
+            <!--左边栏-->
+
+            <!--右边栏-->
+            <div class="col-md-9" style="border:2px solid #a7e4cc; border-radius: 10px; background-color: #f8f8f8; overflow-y:auto; overflow-x:auto;width:400px; height:500px;">
+                <br>
+                <br>
+                <br>
+                <br>
+                <div class="text-center">
+                    <h5>{% autoescape false %}{{ tips }}{% endautoescape %}</h5>
+                </div>
+            </div>
+            <!--右边栏-->
+
+        </div>
+    </div>
+
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+
+</body>
+</html>

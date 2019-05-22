@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>王小波资料检索系统</title>
+    <link href="{{ url_for('static', filename='css/bootstrap-theme.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/minty.css') }}" rel="stylesheet">
+</head>
+<body style="background-color: #a7e4cc;">
+    <div class="container">
+        <h3 class="text-center" style="height: 38px;margin-top: 12px;" >王小波资料检索系统</h3>
+        <div class="row">
+            <!--左边栏-->
+            <div class="col-md-3" style="border-radius: 10px;height: 500px; background-color: #f8f8f8;border:2px solid #a7e4cc;">
+                <!--小导航-->
+                <br>
+                <ul class="nav nav-pills">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">全文检索</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/read">文章浏览</a>
+                  </li>
+                </ul>
+                <!--小导航-->
+
+                <!--检索-->
+                <br>
+                <form action ='/' method='post' class="form-group">
+                    <input type="text" class="form-control" placeholder="Default input" name='query' id="form">
+                    <br>
+                    <div class="text-center">
+                        <button type="submit" class="search-submit btn btn-success disabled" id="submit">检索</button>
+                    </div>
+                </form>
+                <!--检索-->
+            </div>
+            <!--左边栏-->
+
+            <!--右边栏-->
+            <div class="col-md-9" style="border:2px solid #a7e4cc;border-radius: 10px; background-color: #f3faf8; overflow-y:auto; overflow-x:auto;width:400px; height:500px;">
+                <br>
+                {% if wrong == 1 %}
+                    <h6>搜索【{{ coquery }}】， 共找到{{ count }}条结果， 仍然搜索<u id="re_search" style="cursor: pointer;color:#34ae7d">【{{ query }}】</u>？</h6>
+                {% else %}
+                    <h6>搜索【{{ query }}】，共找到{{ count }}条结果</h6>
+                {% endif %}
+                <table class="table table-hover">
+                  <thead>
+                    <tr style="background-color: #d0eae2">
+                      <th width="60px" scope="col">序号</th>
+                      <th width="220px" scope="col">题目</th>
+                      <th scope="col" >检索词条内容</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for book in books %}
+                        <tr style="background-color: #f7f7f9">
+                            <td>{{ book.id }}</td>
+                            <td>{{ book.title }}</td>
+                            <td class="content">{% autoescape false %}{{ book.content }}{% endautoescape %}</td>
+                        </tr>
+                      {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+            <!--右边栏-->
+        </div>
+    </div>
+
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script>
+    $(document).ready(function($) {
+        //获取form的值
+        $('#re_search').click(function(){
+            $("#form").val($('#re_search').text());
+            $('#submit').click();
+        });
+    });
+</script>
+</body>
+</html>
