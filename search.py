@@ -48,15 +48,16 @@ def init():
     for file in files:  # 遍历文件夹
         line_id = 0
         if not os.path.isdir(file):  # 判断是否是文件夹，不是文件夹才打开
-            for line in open(path + "\\" + file, encoding='utf-8', errors='ignore').readlines():
-                # 去标点
-                line = re.sub(r"[0-9\s+\.\!\/_,$%^*()?;；:-【】+\"\']+|[+——！，;:。？、~@#￥%……&*（）]+", " ", line)
-                # 分词
-                seg_list = jieba.cut(line, cut_all=True)
-                s = " ".join(seg_list)
-                #建立倒排索引
-                create_inverted_index_line(s, file, line_id)
-                line_id += 1
+            with open(path + "\\" + file, encoding='utf-8', errors='ignore') as open_file:
+                for line in open_file.readlines():
+                    # 去标点
+                    line = re.sub(r"[0-9\s+\.\!\/_,$%^*()?;；:-【】+\"\']+|[+——！，;:。？、~@#￥%……&*（）]+", " ", line)
+                    # 分词
+                    seg_list = jieba.cut(line, cut_all=True)
+                    s = " ".join(seg_list)
+                    #建立倒排索引
+                    create_inverted_index_line(s, file, line_id)
+                    line_id += 1
 
     print('>>>计算tf-idf')
     # 文档频率df（包含词t的文档的总数）

@@ -3,7 +3,7 @@ from flask import Flask,request, make_response, jsonify, render_template, url_fo
 from flask_bootstrap import Bootstrap
 from flask_script import Manager
 from configure import APP_STATIC_TXT
-import os, search
+import os, search, re
 
 app = Flask(__name__)
 app.config.from_pyfile('config')
@@ -14,8 +14,24 @@ manager = Manager(app)
 @app.route('/',methods=['GET', 'POST'])
 def search_all():
     # GET
-    tips = "<h4>王小波资料检索系统使用说明</h4>"+"<div class=\"text-center\">"+"<p>1.输入内容进行全文搜索........</p>"+\
-                    "<p>2.实现了文本纠错..............</p>"+"<p>3.运用倒排索引和。。。文档排序</p>"+"<p>4.可以文章浏览................</p>"
+    tips =  "<h4>王小波资料检索系统使用说明</h4>"+\
+            "<div class=\"text-center\">"+\
+                "<b>全文检索：</b>"+\
+                "<p>1.在搜索框输入内容，进行全文检索</p>"+\
+                "<p>2.该系统具有文本纠错功能，您也可以继续检索原文本</p>"+\
+                "<b>文章浏览：</b>"+\
+                "<p>1.点击列表中的文章，可以查看文章简介</p>"+\
+                "<p>2.点击简介右下方的“阅读原文”，可查看原文</p>"+\
+            "</div>"
+    tips = "<div style=\"margin-left: 255px;\">"+ \
+                        "<h4>使用说明</h4>" + \
+                        "<b style=\"margin-top: 20px\">全文检索：</b>"+\
+                        "<p>1.在搜索框输入内容，进行全文检索</p>"+\
+                        "<p>2.该系统具有文本纠错功能，您也可以继续检索原文本</p>"+\
+                        "<b>文章浏览：</b>"+\
+                        "<p>1.点击列表中的文章，可以查看文章简介</p>"+\
+                        "<p>2.点击简介右下方的“阅读原文”，可查看原文</p>"+\
+                    "</div>"
     if request.method == 'GET':
         return render_template('search_all.html', tips=tips)
     # POST
@@ -28,9 +44,13 @@ def search_all():
     if query[0] == "【" and query[-1] == "】":
         in_co = 1
         query = query[1:-1]
+    show_query = query
+    show_co_query = query
+    query = re.sub(r"[0-9\s+\.\!\/_,$%^*()?;；:-【】+\"\']+|[+——！，;:。？、~@#￥%……&*（）]+", "", query)
     coquery = query
     if in_co == 0:
         coquery = search.correct_query_api(query)
+        show_co_query = search.correct_query_api(show_query)
     wrong = 0
     if query != coquery:
         print(query)
@@ -48,7 +68,7 @@ def search_all():
             dict['content'] = i[1][1]
             list.append(dict)  # dict中的3个字段与html中定义的变量需一致
             id += 1
-        return render_template('search_result.html', books=list, query=query, coquery=coquery, count=len(dist), wrong=wrong)
+        return render_template('search_result.html', books=list, query=show_query, coquery=show_co_query, count=len(dist), wrong=wrong)
     else:
         tips = "很抱歉，未查询到【" + query + "】的相关结果！"
         return render_template('search_all.html', tips=tips)
@@ -58,20 +78,29 @@ def search_all():
 @app.route('/read',methods=['GET', 'POST'])
 def read_articles():
     # GET
-    introduction = "<h4 class=\"text-center\">王小波资料检索系统使用说明</h4>"+"<div class=\"text-center\">"+"<p>1.输入内容进行全文搜索........</p>"+\
-                    "<p>2.实现了文本纠错..............</p>"+"<p>3.运用倒排索引和。。。文档排序</p>"+"<p>4.可以文章浏览................</p>"
+
+    introduction = "<div style=\"margin-left: 255px;\">"+ \
+                        "<h4>使用说明</h4>" + \
+                        "<b style=\"margin-top: 20px\">全文检索：</b>"+\
+                        "<p>1.在搜索框输入内容，进行全文检索</p>"+\
+                        "<p>2.该系统具有文本纠错功能，您也可以继续检索原文本</p>"+\
+                        "<b>文章浏览：</b>"+\
+                        "<p>1.点击列表中的文章，可以查看文章简介</p>"+\
+                        "<p>2.点击简介右下方的“阅读原文”，可查看原文</p>"+\
+                    "</div>"
     to_article = ""
     title = ""
     is_intro = 0
+    # POST
     if request.method == 'POST':
         is_intro = 1
         title = request.form['title']
         path = "assets\\books_intro\\" + title + ".txt"
         introduction = ""
-        for line in open(path, encoding='utf-8', errors='ignore').readlines():
-            introduction += line
+        with open(path, encoding='utf-8', errors='ignore') as open_file:
+            for line in open_file.readlines():
+                introduction += line
         to_article = "阅读原文"
-        print(introduction)
     path = "assets\\books"  # 文件夹目录
     files = os.listdir(path)  # 得到文件夹下的所有文件名称
     dist = []
@@ -93,7 +122,7 @@ def read_articles():
 
 #阅读原文
 @app.route('/article/<title>')
-def hello_world(title):
+def article(title):
     file = title + ".txt"
     s = "暂无简介"
     try:
@@ -104,6 +133,10 @@ def hello_world(title):
     return render_template('article.html', im_title=title, im_content=s)
 
 
+#404
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 @manager.command
 def dev():
