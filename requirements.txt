@@ -7,7 +7,7 @@ Flask-Bootstrap==3.3.7.1
 Flask-Script==2.0.6
 idna==2.8
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.11.3
 jsonify==0.5
 livereload==2.5.1
 MarkupSafe==1.1.1
